@@ -1,22 +1,23 @@
 # AgentAI with RAG
 
-一个侧重前端交互的全栈 RAG（Retrieval-Augmented Generation，检索增强生成）应用。用户可以上传 PDF 文档并针对文档内容提问；后端会检索与问题相关的文本片段，再调用 OpenAI 模型生成回答。项目还提供可选的 MCP + SerpAPI 联网搜索，以及语音输入和语音播报功能。
+AgentAI with RAG is a full-stack, frontend-focused Retrieval-Augmented Generation application. Users can upload a PDF and ask questions about its content. The backend retrieves relevant passages from the document and sends them to an OpenAI model to generate a concise answer. The project also includes optional MCP-powered web search, voice input, and text-to-speech output.
 
-## 功能
+## Features
 
-- 点击或拖拽上传 PDF 文档
-- 基于 PDF 内容进行 RAG 问答
-- 使用 OpenAI Embeddings 生成文本向量
-- 使用内存向量数据库检索相关文档片段
-- 使用 OpenAI 模型生成简洁回答
-- 可选的 MCP + SerpAPI 联网搜索回答
-- 支持浏览器语音输入和回答朗读
-- 分开展示文档回答与联网搜索回答
-- API 调用失败时在页面中显示错误信息
+- Upload PDF documents by clicking or dragging and dropping
+- Ask questions grounded in the uploaded PDF
+- Generate document embeddings with OpenAI
+- Retrieve relevant passages with an in-memory vector store
+- Generate concise answers with an OpenAI model
+- Optionally search the web through MCP and SerpAPI
+- Ask questions using browser-based speech recognition
+- Read answers aloud with text-to-speech
+- Display document and web-search answers separately
+- Display API errors in the user interface
 
-## 技术栈
+## Tech Stack
 
-### 前端
+### Frontend
 
 - React 18
 - Ant Design
@@ -24,62 +25,62 @@
 - React Speech Recognition
 - Speak TTS
 
-### 后端
+### Backend
 
 - Node.js
 - Express
 - LangChain
 - OpenAI
-- MCP SDK
+- Model Context Protocol SDK
 - Multer
 - PDF Parse
-- SerpAPI（可选）
+- SerpAPI (optional)
 
-## 工作流程
+## How It Works
 
 ```text
-上传 PDF
-   ↓
-读取并拆分文档
-   ↓
-OpenAI Embeddings 生成向量
-   ↓
-MemoryVectorStore 保存并检索相关片段
-   ↓
-相关文档片段 + 用户问题
-   ↓
-OpenAI 模型生成 RAG 回答
+Upload a PDF
+     ↓
+Load and split the document
+     ↓
+Generate vectors with OpenAI Embeddings
+     ↓
+Store and retrieve passages with MemoryVectorStore
+     ↓
+Combine relevant passages with the user's question
+     ↓
+Generate a grounded answer with an OpenAI model
 ```
 
-如果配置了 `SERPAPI_KEY`，后端还会启动本地 MCP Server，通过 SerpAPI 搜索网络内容，再由 OpenAI 模型总结为联网回答。
+When `SERPAPI_KEY` is configured, the backend also starts a local MCP server. The MCP tool searches the web through SerpAPI, and an OpenAI model summarizes the results into a separate web-search answer.
 
-## 运行要求
+## Prerequisites
 
-- Node.js 18 或更高版本
+- Node.js 18 or later
 - npm
-- OpenAI API Key
-- SerpAPI Key（可选，仅用于联网搜索）
+- An OpenAI API key
+- A SerpAPI key (optional, required only for web search)
 
-OpenAI API Key 可以在 [OpenAI Platform](https://platform.openai.com/api-keys) 创建。请妥善保存密钥，不要把 `.env` 文件提交到 GitHub。
+Create an API key from the [OpenAI Platform](https://platform.openai.com/api-keys). Keep the key private and never commit the `.env` file to GitHub.
 
-## 安装与启动
+## Installation and Setup
 
-### 1. 克隆项目
+### 1. Clone the repository
 
 ```bash
 git clone https://github.com/<your-github-username>/AgentAI_withRAG.git
 cd AgentAI_withRAG
 ```
 
-如果项目已经在本地，可以直接进入项目根目录。
+If the project is already on your computer, open a terminal in the project root instead.
 
-### 2. 安装前端依赖
+### 2. Install the frontend dependencies
 
 ```bash
 npm install
 ```
 
-### 3. 安装后端依赖
+### 3. Install the backend dependencies
 
 ```bash
 cd server
@@ -87,133 +88,133 @@ npm install
 cd ..
 ```
 
-也可以在项目根目录执行：
+Alternatively, run the following command from the project root:
 
 ```bash
 npm install --prefix server
 ```
 
-### 4. 创建上传目录
+### 4. Create the upload directory
 
-上传的 PDF 不会提交到 GitHub，因此首次运行时需要创建目录。
+Uploaded PDFs are excluded from Git, so you need to create the directory after cloning the repository.
 
-PowerShell：
+PowerShell:
 
 ```powershell
 New-Item -ItemType Directory -Force server/uploads
 ```
 
-macOS / Linux：
+macOS or Linux:
 
 ```bash
 mkdir -p server/uploads
 ```
 
-### 5. 配置环境变量
+### 5. Configure environment variables
 
-在 `server` 目录下新建 `.env` 文件：
+Create a `.env` file inside the `server` directory:
 
 ```dotenv
 OPENAI_API_KEY=your_openai_api_key
 
-# 可选：启用 MCP 联网搜索
+# Optional: enables MCP-powered web search
 SERPAPI_KEY=your_serpapi_key
 ```
 
-`OPENAI_API_KEY` 是 PDF RAG 问答的必要配置。`SERPAPI_KEY` 未配置时，文档问答仍然可以使用，但联网搜索功能会被跳过。
+`OPENAI_API_KEY` is required for PDF embeddings and RAG answers. If `SERPAPI_KEY` is not configured, document-based question answering will still work, but web search will be skipped.
 
-### 6. 同时启动前端和后端
+### 6. Start the application
 
-在项目根目录执行：
+Run the following command from the project root to start both the frontend and backend:
 
 ```bash
 npm run dev
 ```
 
-启动成功后访问：
+Once the application is running, open:
 
-- 前端：http://localhost:3000
-- 后端：http://localhost:5001
+- Frontend: http://localhost:3000
+- Backend: http://localhost:5001
 
-### 分别启动前端和后端
+### Start the frontend and backend separately
 
-如果需要单独查看日志，可以打开两个终端。
+To view their logs separately, open two terminals.
 
-终端一（后端）：
+Terminal 1 — backend:
 
 ```bash
 cd server
 npm start
 ```
 
-终端二（前端）：
+Terminal 2 — frontend:
 
 ```bash
 npm start
 ```
 
-不要同时运行 `npm run dev` 和 `server` 目录中的 `npm start`，否则后端端口 `5001` 会发生冲突。
+Do not run `npm run dev` and `npm start` inside the `server` directory at the same time. Both commands would attempt to start the backend on port `5001`.
 
-## 使用方法
+## Usage
 
-1. 打开 http://localhost:3000。
-2. 点击上传区域或将 PDF 拖入页面。
-3. 等待页面提示文件上传成功。
-4. 在底部输入框中输入与文档相关的问题。
-5. 查看 `RAG Answer` 中基于 PDF 生成的回答。
-6. 如果配置了 SerpAPI，查看 `MCP Answer` 中的联网搜索回答。
+1. Open http://localhost:3000.
+2. Click the upload area or drag a PDF onto it.
+3. Wait for the upload success message.
+4. Enter a question about the document in the input field.
+5. Read the PDF-grounded response under **RAG Answer**.
+6. If SerpAPI is configured, read the web result under **MCP Answer**.
 
-> 每次启动服务后，请先上传 PDF，再开始提问。
+> Upload a PDF after every server restart before asking a question.
 
-## 可用命令
+## Available Scripts
 
-| 命令 | 作用 |
+| Command | Description |
 | --- | --- |
-| `npm run dev` | 同时启动 React 前端和 Express 后端 |
-| `npm start` | 只启动 React 前端 |
-| `npm run server` | 只启动后端 |
-| `npm run build` | 构建生产版本前端 |
-| `npm test` | 运行前端测试 |
+| `npm run dev` | Starts the React frontend and Express backend together |
+| `npm start` | Starts only the React frontend |
+| `npm run server` | Starts only the backend |
+| `npm run build` | Creates a production frontend build |
+| `npm test` | Runs the frontend test suite |
 
-## 项目结构
+## Project Structure
 
 ```text
 AgentAI_withRAG/
-├── public/                       # React 静态资源
+├── public/                       # React static assets
 ├── src/
 │   ├── components/
-│   │   ├── ChatComponent.js      # 文字/语音提问
-│   │   ├── PdfUploader.js        # PDF 上传
-│   │   └── RenderQA.js           # 回答展示
-│   └── App.js                    # 前端主页面
+│   │   ├── ChatComponent.js      # Text and voice questions
+│   │   ├── PdfUploader.js        # PDF upload interface
+│   │   └── RenderQA.js           # Question and answer display
+│   └── App.js                    # Main frontend layout
 ├── server/
-│   ├── chat.js                   # PDF 解析、向量检索与 RAG
-│   ├── chat-mcp.js               # MCP 搜索结果总结
-│   ├── mcp-server.js             # SerpAPI MCP Server
-│   ├── server.js                 # Express 服务和 API 路由
-│   └── uploads/                  # 本地上传文件，不提交到 Git
+│   ├── chat.js                   # PDF parsing, retrieval, and RAG
+│   ├── chat-mcp.js               # MCP search-result summarization
+│   ├── mcp-server.js             # SerpAPI MCP server
+│   ├── server.js                 # Express server and API routes
+│   └── uploads/                  # Local uploads excluded from Git
 ├── package.json
 └── README.md
 ```
 
-## API
+## API Endpoints
 
-### 上传 PDF
+### Upload a PDF
 
 ```http
 POST /upload
 Content-Type: multipart/form-data
 ```
 
-文件字段名为 `file`。
+The file field must be named `file`.
 
-### 文档问答
+### Ask a question
 
 ```http
 GET /chat?question=<your-question>
 ```
 
-返回示例：
+Example response:
 
 ```json
 {
@@ -222,35 +223,38 @@ GET /chat?question=<your-question>
 }
 ```
 
-## 常见问题
+## Troubleshooting
 
-### 上传 PDF 失败
+### PDF upload fails
 
-- 确认后端已在 `5001` 端口运行。
-- 确认 `server/uploads` 目录存在。
-- 查看后端终端中的错误信息。
+- Confirm that the backend is running on port `5001`.
+- Confirm that the `server/uploads` directory exists.
+- Check the backend terminal for an error message.
 
-### 页面一直加载或模型请求失败
+### The page keeps loading or the model request fails
 
-- 检查 `server/.env` 中的 `OPENAI_API_KEY`。
-- 确认 OpenAI API 项目具有可用额度和对应模型的访问权限。
-- 修改 `.env` 后需要重启后端。
+- Check `OPENAI_API_KEY` in `server/.env`.
+- Confirm that the OpenAI API project has available credits and access to the configured model.
+- Restart the backend after changing `.env`.
 
 ### `EADDRINUSE: address already in use :::5001`
 
-端口 `5001` 已被另一个后端进程占用。关闭之前运行的 `npm start` 或 `npm run dev` 终端，然后重新启动项目。
+Another backend process is already using port `5001`. Stop the terminal previously running `npm start` or `npm run dev`, then start the project again.
 
-### MCP 联网搜索不可用
+### MCP web search is unavailable
 
-在 `server/.env` 中配置有效的 `SERPAPI_KEY` 并重启后端。未配置时不会影响 PDF RAG 问答。
+Add a valid `SERPAPI_KEY` to `server/.env` and restart the backend. This setting is optional and does not affect PDF-based RAG answers.
 
-## 安全说明
+## Security
 
-- 不要将 `server/.env` 或任何 API Key 提交到 GitHub。
-- 不要提交 `server/uploads` 中可能含有个人信息的 PDF。
-- 如果密钥曾公开，请立即撤销并生成新密钥。
-- OpenAI API 调用会产生费用，请关注账户用量和限额。
+- Never commit `server/.env` or any API key to GitHub.
+- Do not commit PDFs from `server/uploads`, as they may contain private information.
+- Revoke and replace any API key that has been exposed.
+- OpenAI API requests may incur usage charges, so monitor your usage and account limits.
 
-## 说明
+## Current Limitations
 
-当前向量数据保存在内存中，服务重启后不会持久化。系统会在提问时处理当前上传的 PDF，适合用于学习、演示和小规模原型开发。
+- The vector store is held in memory and is not persisted across server restarts.
+- The currently uploaded document is tracked only in server memory.
+- The PDF is processed again for each question, which may increase response time and API usage.
+- The project is intended primarily for learning, demonstrations, and small prototypes.
